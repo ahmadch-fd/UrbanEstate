@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:urban_estate/controllers/property_listing_controller.dart';
 import 'package:urban_estate/utils/app_colors.dart';
 
 class CategorySelector extends StatefulWidget {
@@ -9,55 +11,56 @@ class CategorySelector extends StatefulWidget {
 }
 
 class _CategorySelectorState extends State<CategorySelector> {
-  // Track the selected category
-  String selectedCategory = 'Family';
+  late final PropertyListingController controller;
 
-  final List<String> categories = [
-    'Bachelor',
-    'Family',
-    'Office',
-    'Sublet',
-    'Flat',
-  ];
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.isRegistered<PropertyListingController>()
+        ? Get.find<PropertyListingController>()
+        : Get.put(PropertyListingController(), permanent: true);
+  }
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        children: categories.map((category) {
-          bool isSelected = selectedCategory == category;
+      child: Obx(
+        () => Row(
+          children: controller.tenantTypeOptions.map((category) {
+            final isSelected = controller.selectedTenantType.value == category;
 
-          return Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: ChoiceChip(
-              label: Text(category),
-              selected: isSelected,
-              onSelected: (bool selected) {
-                setState(() {
-                  selectedCategory = category;
-                });
-              },
-              // Styling based on your image
-              labelStyle: TextStyle(
-                color: isSelected ? const Color(0xFF004D40) : Colors.white70,
-                fontWeight: FontWeight.w500,
-              ),
-              selectedColor: const Color(0xFFC6FF00), // Lime green highlight
-              backgroundColor: AppColors.forestGreen,
-              shape: StadiumBorder(
-                side: BorderSide(
-                  color: isSelected ? Colors.transparent : Colors.white38,
-                  width: 1,
+            return Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: ChoiceChip(
+                label: Text(category),
+                selected: isSelected,
+                onSelected: (_) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (!mounted) return;
+                    controller.setTenantTypeFilter(category);
+                  });
+                },
+                labelStyle: TextStyle(
+                  color: isSelected ? const Color(0xFF004D40) : Colors.white70,
+                  fontWeight: FontWeight.w500,
                 ),
+                selectedColor: const Color(0xFFC6FF00),
+                backgroundColor: AppColors.forestGreen,
+                shape: StadiumBorder(
+                  side: BorderSide(
+                    color: isSelected ? Colors.transparent : Colors.white38,
+                    width: 1,
+                  ),
+                ),
+                showCheckmark: false,
+                elevation: 0,
+                pressElevation: 0,
               ),
-              showCheckmark: false, // Removes the default check icon
-              elevation: 0,
-              pressElevation: 0,
-            ),
-          );
-        }).toList(),
+            );
+          }).toList(),
+        ),
       ),
     );
   }

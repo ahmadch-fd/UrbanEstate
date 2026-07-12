@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:urban_estate/utils/app_colors.dart';
 import 'package:urban_estate/utils/app_const.dart';
+import 'package:urban_estate/utils/responsive.dart';
 
 class CustomButton extends StatelessWidget {
   const CustomButton({
@@ -17,13 +17,12 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height;
-    final double width = MediaQuery.of(context).size.width;
+    final responsive = Responsive.of(context);
     return InkWell(
       onTap: onTap,
       child: Container(
-        height: height * 0.065,
-        width: width * 0.82,
+        height: responsive.buttonHeight,
+        width: responsive.authFieldWidth,
         decoration: BoxDecoration(
           // color: AppColors.primaryButtonColor,
           color: color,
@@ -33,7 +32,7 @@ class CustomButton extends StatelessWidget {
           child: Text(
             label,
             style: poppinsSemiBold.copyWith(
-              fontSize: 18,
+              fontSize: responsive.font(18),
               // color: AppColors.mainTextColor,
               color: textColor,
             ),

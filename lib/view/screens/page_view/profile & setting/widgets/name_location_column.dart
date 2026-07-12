@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:urban_estate/controllers/image_picker_controller.dart';
-import 'package:urban_estate/controllers/name&location_controller.dart';
+import 'package:urban_estate/controllers/user_profile_controller.dart';
 import 'package:urban_estate/utils/app_colors.dart';
 import 'package:urban_estate/utils/app_const.dart';
 
@@ -12,15 +11,15 @@ class NameLocationColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final NameLocationController controller = Get.put(NameLocationController());
+    final controller = Get.put(UserProfileController(), permanent: true);
 
     return Column(
       children: [
         Obx(
           () => Text(
-            controller.nameController.value.text.isEmpty
-                ? 'John Doe'
-                : controller.nameController.value.text,
+            controller.profile.value?.fullName.isNotEmpty ?? false
+                ? controller.profile.value!.fullName
+                : 'Your Profile',
             style: poppinsRegular.copyWith(color: Colors.black, fontSize: 16),
           ),
         ),
@@ -33,9 +32,13 @@ class NameLocationColumn extends StatelessWidget {
               color: AppColors.bgColor,
               size: 16,
             ),
-            Text(
-              'Manhattan, New York',
-              style: poppinsLite.copyWith(color: AppColors.bgColor),
+            Obx(
+              () => Text(
+                controller.profile.value?.location.isNotEmpty ?? false
+                    ? controller.profile.value!.location
+                    : controller.profile.value?.email ?? '',
+                style: poppinsLite.copyWith(color: AppColors.bgColor),
+              ),
             ),
           ],
         ),

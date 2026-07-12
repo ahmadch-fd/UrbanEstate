@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:urban_estate/controllers/date_picker_controller.dart';
 
 class DatePicker extends StatelessWidget {
-  const DatePicker({super.key});
+  const DatePicker({super.key, required this.controller});
+
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController dateController = TextEditingController();
-    final DatePickerController datepickercontroller =
-        Get.put<DatePickerController>(DatePickerController());
     final double width = MediaQuery.of(context).size.width;
     return SizedBox(
       width: width * 0.88,
       child: TextField(
-        controller: dateController,
+        controller: controller,
         readOnly: true,
         decoration: InputDecoration(
           //hint: Text('e.g. John Doe'),
@@ -45,11 +42,10 @@ class DatePicker extends StatelessWidget {
             lastDate: DateTime(2100),
           );
 
-          if (pickedDate != null) {
-            datepickercontroller.selectedDate.value = dateController.toString();
-            dateController.text =
-                "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
-          }
+          if (pickedDate == null) return;
+
+          controller.text =
+              "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
         },
       ),
     );

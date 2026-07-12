@@ -4,7 +4,10 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:urban_estate/utils/city_list.dart';
 
 class RegionTextfield extends StatefulWidget {
-  const RegionTextfield({super.key});
+  const RegionTextfield({super.key, this.value, this.onChanged});
+
+  final String? value;
+  final ValueChanged<String>? onChanged;
 
   @override
   State<RegionTextfield> createState() => _RegionTextfieldState();
@@ -12,6 +15,14 @@ class RegionTextfield extends StatefulWidget {
 
 class _RegionTextfieldState extends State<RegionTextfield> {
   String selectedCity = "Lahore, Punjab";
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.value != null && widget.value!.isNotEmpty) {
+      selectedCity = widget.value!;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,9 +75,12 @@ class _RegionTextfieldState extends State<RegionTextfield> {
         }).toList(),
 
         onChanged: (value) {
+          if (value == null) return;
+
           setState(() {
-            selectedCity = value!;
+            selectedCity = value;
           });
+          widget.onChanged?.call(value);
         },
       ),
     );

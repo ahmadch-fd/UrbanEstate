@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:urban_estate/utils/app_colors.dart';
 import 'package:urban_estate/utils/app_const.dart';
+import 'package:urban_estate/utils/responsive.dart';
 
 class TextfieldForAuth extends StatelessWidget {
   final String label;
@@ -18,22 +19,20 @@ class TextfieldForAuth extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height;
-    final double width = MediaQuery.of(context).size.width;
+    final responsive = Responsive.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: height * 0.0),
         Text(
           label,
           style: poppinsLite.copyWith(
-            fontSize: 16,
+            fontSize: responsive.font(16),
             color: AppColors.mainTextColor,
           ),
         ),
-        SizedBox(height: height * 0.01),
+        SizedBox(height: responsive.space(8)),
         SizedBox(
-          width: width * 0.82,
+          width: responsive.authFieldWidth,
           child: TextFormField(
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -45,7 +44,10 @@ class TextfieldForAuth extends StatelessWidget {
             obscureText: obscureText,
             decoration: InputDecoration(
               hintText: hint,
-              hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 14),
+              hintStyle: TextStyle(
+                color: Colors.grey.shade400,
+                fontSize: responsive.font(14),
+              ),
               filled: true,
               fillColor: Colors.grey.shade100,
               contentPadding: const EdgeInsets.symmetric(

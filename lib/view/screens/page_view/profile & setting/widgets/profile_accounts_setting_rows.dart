@@ -17,24 +17,24 @@ class ProfileAccountsSettingRows extends StatelessWidget {
   final VoidCallback? ontap;
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, size: 25, color: AppColors.bgColor.withValues(alpha: 0.4)),
-        SizedBox(width: width * 0.1),
-        InkWell(
-          onTap: ontap,
-          child: Text(
+    return InkWell(
+      onTap: ontap,
+      child: Row(
+        children: [
+          Icon(icon, size: 25, color: AppColors.bgColor.withValues(alpha: 0.4)),
+          SizedBox(width: width * 0.1),
+          Text(
             text,
             style: poppinsRegular.copyWith(
               color: AppColors.bgColor.withValues(alpha: 0.7),
               fontSize: 16,
             ),
           ),
-        ),
 
-        // SizedBox(width: width * 0.3),
-        //  NotificationSwitch(),
-      ],
+          // SizedBox(width: width * 0.3),
+          //  NotificationSwitch(),
+        ],
+      ),
     );
   }
 }

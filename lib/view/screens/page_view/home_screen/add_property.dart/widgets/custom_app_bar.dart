@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:urban_estate/controllers/page_view_controller.dart';
+import 'package:urban_estate/controllers/post_property_screen_controller.dart';
 import 'package:urban_estate/utils/app_colors.dart';
 import 'package:urban_estate/utils/app_const.dart';
+import 'package:urban_estate/utils/responsive.dart';
 
 class CustomAppBar extends StatelessWidget {
   const CustomAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height;
-    final double width = MediaQuery.of(context).size.width;
+    final responsive = Responsive.of(context);
     return SafeArea(
       child: Stack(
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: Container(
-              height: height * 0.08,
-              width: width,
+              height: responsive.scale(64),
+              width: responsive.width,
               decoration: BoxDecoration(color: AppColors.appbartext_color),
               child: Padding(
                 padding: const EdgeInsets.only(top: 15),
@@ -24,7 +27,7 @@ class CustomAppBar extends StatelessWidget {
                   textAlign: TextAlign.center,
                   'Post Your Property',
                   style: poppinsRegular.copyWith(
-                    fontSize: 18,
+                    fontSize: responsive.font(18),
                     color: AppColors.bgColor,
                   ),
                 ),
@@ -36,13 +39,16 @@ class CustomAppBar extends StatelessWidget {
             left: 7,
             child: GestureDetector(
               onTap: () {
-                Navigator.pop(context);
+                if (Get.isRegistered<PostPropertyController>()) {
+                  Get.find<PostPropertyController>().resetForm();
+                }
+                Get.find<OnboardingController>().changePage(0);
               },
               child: CircleAvatar(
                 radius: 22,
                 backgroundColor: AppColors.forestGreen,
                 child: const Icon(
-                  Icons.arrow_back_ios_new_outlined,
+                  Icons.arrow_back_rounded,
                   color: Colors.white,
                   size: 28,
                 ),

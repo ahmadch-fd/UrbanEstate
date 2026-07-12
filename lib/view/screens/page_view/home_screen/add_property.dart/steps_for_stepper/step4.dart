@@ -8,9 +8,9 @@ import 'package:urban_estate/view/screens/page_view/home_screen/add_property.dar
 import 'package:urban_estate/view/screens/page_view/home_screen/add_property.dart/widgets/toggle_chip.dart';
 
 class Step4Features extends StatelessWidget {
-  final PostPropertyController controller;
-
   const Step4Features({super.key, required this.controller});
+
+  final PostPropertyController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,6 @@ class Step4Features extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Features
           Row(
             children: [
               const Icon(
@@ -50,49 +49,32 @@ class Step4Features extends StatelessWidget {
                 .toList(),
           ),
           const SizedBox(height: 20),
-
-          // ── Description ──────────────────────────────────────
           const SectionLabel(text: 'Description'),
           const SizedBox(height: 10),
-
           CustomTextField(
             hint: 'Write something about your property...',
             controller: controller.descriptionController,
             maxLines: 5,
           ),
           const SizedBox(height: 20),
-                   
-          // ── Picture ──────────────────────────────────────────
-          const SectionLabel(text: 'Picture 1'),
-          const SizedBox(height: 10),
-
-          _ImagePickerSection(controller: controller),
-
-          const SizedBox(height: 10),
-          const SectionLabel(text: 'Picture 2'),
-          const SizedBox(height: 10),
-          _ImagePickerSection(controller: controller),
-          const SizedBox(height: 10), const SectionLabel(text: 'Picture 3'),
-          const SizedBox(height: 10),
-          _ImagePickerSection(controller: controller),
-          const SizedBox(height: 10), const SectionLabel(text: 'Picture 4'),
+          const SectionLabel(text: 'Pictures'),
           const SizedBox(height: 10),
           _ImagePickerSection(controller: controller),
           const SizedBox(height: 13),
-          // ── Submit Button
-          PrimaryButton(label: 'Submit', onTap: controller.submitForm),
+          PrimaryButton(
+            label: controller.isSubmitting.value ? 'Posting...' : 'Submit',
+            onTap: () => controller.submitForm(),
+          ),
         ],
       ),
     );
   }
 }
 
-// Image Picker Section
-
 class _ImagePickerSection extends StatelessWidget {
-  final PostPropertyController controller;
-
   const _ImagePickerSection({required this.controller});
+
+  final PostPropertyController controller;
 
   void _showPickerOptions(BuildContext context) {
     showModalBottomSheet(
@@ -116,7 +98,7 @@ class _ImagePickerSection extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               const Text(
-                'Select Image Source',
+                'Add Property Pictures',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 16),
@@ -133,7 +115,7 @@ class _ImagePickerSection extends StatelessWidget {
                     color: AppColors.primary,
                   ),
                 ),
-                title: const Text('Choose from Gallery'),
+                title: const Text('Choose one or more from Gallery'),
                 onTap: () {
                   Get.back();
                   controller.pickImage();
@@ -166,87 +148,91 @@ class _ImagePickerSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      final image = controller.selectedImage.value;
+      final images = controller.selectedImages;
 
-      if (image != null) {
-        // Show selected image preview
-        return Stack(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.file(
-                image,
-                width: double.infinity,
-                height: 200,
-                fit: BoxFit.cover,
-              ),
-            ),
-            Positioned(
-              top: 8,
-              right: 8,
-              child: GestureDetector(
-                onTap: controller.removeImage,
-                child: Container(
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.6),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(Icons.close, color: Colors.white, size: 18),
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: 8,
-              right: 8,
-              child: GestureDetector(
-                onTap: () => _showPickerOptions(context),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.6),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: images.length,
+            separatorBuilder: (_, __) => const SizedBox(height: 12),
+            itemBuilder: (context, index) {
+              final image = images[index];
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SectionLabel(text: 'Picture ${index + 1}'),
+                  const SizedBox(height: 8),
+                  Stack(
                     children: [
-                      Icon(Icons.edit, color: Colors.white, size: 14),
-                      SizedBox(width: 4),
-                      Text(
-                        'Change',
-                        style: TextStyle(color: Colors.white, fontSize: 12),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.file(
+                          image,
+                          width: double.infinity,
+                          height: 200,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: GestureDetector(
+                          onTap: () => controller.removeImageAt(index),
+                          child: Container(
+                            width: 32,
+                            height: 32,
+                            decoration: BoxDecoration(
+                              color: Colors.black.withValues(alpha: 0.6),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.close,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                ),
+                ],
+              );
+            },
+          ),
+          if (images.isNotEmpty) const SizedBox(height: 12),
+          GestureDetector(
+            onTap: () => _showPickerOptions(context),
+            child: Container(
+              width: double.infinity,
+              height: 86,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.add_photo_alternate, color: Colors.grey.shade500),
+                  const SizedBox(width: 8),
+                  Text(
+                    images.isEmpty
+                        ? 'Add property pictures'
+                        : 'Add more pictures',
+                    style: TextStyle(
+                      color: Colors.grey.shade700,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        );
-      }
-
-      // Empty state — tap to pick
-      return GestureDetector(
-        onTap: () => _showPickerOptions(context),
-        child: Container(
-          width: 80,
-          height: 80,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.border),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.image_outlined, color: Colors.grey.shade400, size: 32),
-            ],
-          ),
-        ),
+        ],
       );
     });
   }

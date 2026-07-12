@@ -17,81 +17,46 @@ class Step2Location extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Division
           CustomDropdownField<String>(
-            hint: 'Division',
-            value: controller.division.value,
-            items: controller.divisionOptions,
+            hint: 'Province Name',
+            value: controller.provinceName.value,
+            items: controller.provinceOptions,
             itemLabel: (e) => e,
-            onChanged: controller.onDivisionChanged,
+            onChanged: controller.onProvinceChanged,
           ),
           const SizedBox(height: 12),
-
-          // District (enabled only when division is selected)
           CustomDropdownField<String>(
-            hint: 'District',
-            value: controller.district.value,
-            items: controller.division.value != null
-                ? ['Dhaka', 'Gazipur', 'Narayanganj', 'Narsingdi']
-                : controller.districtOptions,
+            hint: 'City',
+            value: controller.city.value,
+            items: controller.cityOptions,
             itemLabel: (e) => e,
-            onChanged: controller.division.value != null
-                ? controller.onDistrictChanged
-                : (_) {},
-            enabled: controller.division.value != null,
+            onChanged: controller.provinceName.value == null
+                ? (_) {}
+                : (val) => controller.city.value = val,
+            enabled: controller.provinceName.value != null,
           ),
           const SizedBox(height: 12),
-
-          // Area (enabled only when district is selected)
-          CustomDropdownField<String>(
-            hint: 'Area',
-            value: controller.area.value,
-            items: controller.district.value != null
-                ? ['Gulshan', 'Banani', 'Dhanmondi', 'Mirpur', 'Uttara']
-                : controller.areaOptions,
-            itemLabel: (e) => e,
-            onChanged: (val) {
-              if (controller.district.value != null) {
-                controller.area.value = val;
-              }
-            },
-            enabled: controller.district.value != null,
-          ),
-          const SizedBox(height: 32),
-
-          // Sector No
           CustomTextField(
-            hint: 'Sector No',
-            controller: controller.sectorController,
-            keyboardType: TextInputType.number,
+            hint: 'Location / Area e.g. DHA Defence',
+            controller: controller.locationController,
           ),
           const SizedBox(height: 12),
-
-          // Road No
           CustomTextField(
-            hint: 'Road No',
-            controller: controller.roadController,
-            keyboardType: TextInputType.number,
+            hint: 'Latitude e.g. 31.4805',
+            controller: controller.latitudeController,
+            keyboardType: const TextInputType.numberWithOptions(
+              decimal: true,
+            ),
           ),
           const SizedBox(height: 12),
-
-          // House No
           CustomTextField(
-            hint: 'House No',
-            controller: controller.houseNoController,
-            keyboardType: TextInputType.number,
-          ),
-          const SizedBox(height: 12),
-
-          // House Name
-          CustomTextField(
-            hint: 'House Name',
-            controller: controller.houseNameController,
+            hint: 'Longitude e.g. 74.4124',
+            controller: controller.longitudeController,
+            keyboardType: const TextInputType.numberWithOptions(
+              decimal: true,
+            ),
           ),
           const SizedBox(height: 24),
-
-          // Next Button
-           // I use this next button in add_property 
           PrimaryButton(
             label: 'Next',
             onTap: () {

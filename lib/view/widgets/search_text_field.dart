@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:urban_estate/utils/app_colors.dart';
-import 'package:urban_estate/utils/app_const.dart';
+import 'package:urban_estate/utils/responsive.dart';
 
 class SearchTextField extends StatelessWidget {
   const SearchTextField({super.key, required this.text});
   final String text;
   @override
   Widget build(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height;
-    final double width = MediaQuery.of(context).size.width;
+    final responsive = Responsive.of(context);
     return SizedBox(
-      height: height * 0.07,
+      height: responsive.searchHeight,
       child: TextFormField(
         cursorColor: AppColors.mainTextColor,
         decoration: InputDecoration(
@@ -30,7 +29,10 @@ class SearchTextField extends StatelessWidget {
             borderSide: BorderSide(color: Colors.white),
           ),
           hintText: text,
-          hintStyle: TextStyle(color: AppColors.mainTextColor, fontSize: 15),
+          hintStyle: TextStyle(
+            color: AppColors.mainTextColor,
+            fontSize: responsive.font(15),
+          ),
           prefixIcon: const Icon(
             Icons.search,
             size: 19,
